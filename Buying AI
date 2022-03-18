@@ -1,0 +1,109 @@
+# set up budget
+
+budget = 18
+rounds = 8
+properties = list(range(1,31))
+
+# ask what the values of the properties are
+
+# calculate D (the difference between min and max properties)
+
+# define max bid (based on D and b)
+
+def what_props():
+    a = input("What is the value of the first property? ")
+    b = input("What is the value of the second property? ")
+    c = input("What is the value of the third property? ")
+    properties.remove(int(a))
+    properties.remove(int(b))
+    properties.remove(int(c))
+    return([a, b, c, properties])
+
+def find_delta(abcprops):
+    a = int(abcprops[0])
+    b = int(abcprops[1])
+    c = int(abcprops[2])
+    auction = [a,b,c]
+    auction = sorted(auction)
+    delta = auction[2]-auction[0]
+    return([delta,a,b,c])
+
+# Strategy
+# version 1: the range of deltas is 27 - ie the max delta is 29 and the min is 2. On average you should bid
+# 2.25 coins per turn (18 coins over 8 turns) so 4.5 is the spread (You would bid 0 for the worst delta, 2.25 for an average delta
+# and 4.5 for a good delta
+
+##def max_bid(delta, budget,rounds):
+##    budget = 18
+##    ratio = delta/27
+##    max_bid = ratio*(budget*2/(rounds))
+##    return(round(max_bid))
+
+# version 2: actually the max amount you should apply the ratio to is: amount of money left / rounds left)*2. THat way if you
+# have lots left you bid more freely
+
+
+##def max_bid(delta, budget,rounds):
+##    ratio = delta/27
+##    max_bid = ratio*(budget*2/(rounds))
+##    return(round(max_bid))
+
+
+#version 3: Designed to be more aggressive - bid zero for minimal deltas and can go higher for large ones
+
+
+def max_bid(delta, budget,rounds):
+    if 0 < delta < 5:
+        max_bid = 0    
+    elif 4 < delta < 9:
+        max_bid = 1    
+    elif 8 < delta < 13:
+        max_bid = 2    
+    elif 12 < delta < 16:
+        max_bid = 3    
+    elif 15 < delta < 19:
+        max_bid = 4    
+    elif 18 < delta < 22:
+        max_bid = 5    
+    elif 21 < delta < 24:
+        max_bid = 6    
+    elif 23 < delta < 26:
+        max_bid = 7    
+    elif 25 < delta < 28:
+        max_bid = 8    
+    elif 27 < delta < 30:
+        max_bid = 9    
+    return(round(max_bid))
+
+
+def bid_or_not(abcprops,max_bid,budget):
+    a = int(abcprops[1])
+    b = int(abcprops[2])
+    c = int(abcprops[3])    
+    mybid = 0
+    while True:
+        try:
+            current_bid = input("What is the current bid? (or press enter if all players pass) ")
+            if int(current_bid) < int(max_bid):
+                mybid = int(current_bid) + 1
+                print("I bid",str(mybid))
+            elif int(current_bid) >= int(max_bid):
+                print("I pass")
+                budget -= (round(mybid/2))
+                # gains the bottom card
+                return(budget)
+                break
+        except:
+                print("I win the auction! It was a steal, at only",str(mybid))
+                budget -= mybid
+                # gains the top card
+                return(budget)
+                break 
+            
+while rounds > 0:
+    print(rounds,"rounds to go!")
+    delta = find_delta(what_props())
+    budget = bid_or_not(delta,(max_bid(delta[0],budget,rounds)),budget)
+    print("I have",budget,"remaining")
+    print()
+    rounds -= 1
