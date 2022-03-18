@@ -1,0 +1,51 @@
+properties =[]
+cash_cards = [0,0,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,14,14,15,15]
+rounds = 8
+
+try:
+    while True:
+        next_property = int(input("Please enter the properties that I bought, or press enter to finish entering properties. "))
+        properties.append(next_property)
+except:
+        properties = sorted(properties)
+        print("OK, my properties are: ",properties)
+
+# ask what the values of the properties are
+
+# calculate D (the difference between min and max properties)
+
+# define max bid (based on D and b)
+
+def what_props():
+    a = input("What is the value of the first money card? ")
+    b = input("What is the value of the second money card? ")
+    c = input("What is the value of the third money card? ")
+    cash_cards.remove(int(a))
+    cash_cards.remove(int(b))
+    cash_cards.remove(int(c))
+    return([a, b, c, cash_cards])
+
+def find_delta(abcprops):
+    a = int(abcprops[0])
+    b = int(abcprops[1])
+    c = int(abcprops[2])
+    auction = [a,b,c]
+    auction = sorted(auction)
+    delta = auction[2]-auction[0]
+    return([delta,a,b,c])
+
+# Strategy = the range of deltas is 14 - ie the max delta is 15 and the min is 1.
+# computer should assess where the current delta rates on this scale then select its appropriate property
+
+while rounds > 0:
+    print(rounds,"rounds to go!")
+    print()
+    delta = find_delta(what_props())
+    no_prop = len(properties)
+    ratio = no_prop*delta[0] / 14
+    choice = properties[round(ratio)-1]
+    print("I choose to bid Property Number: ",choice)
+    properties.remove(choice)
+    print("I have",properties,"remaining")
+    print()
+    rounds -= 1
